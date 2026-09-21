@@ -5,8 +5,8 @@ import { breadcrumbLd, JsonLd } from "@/lib/seo";
 import { Icon, type IconName } from "./icons";
 
 const variants = {
-  primary: "bg-brand text-white hover:bg-brand-dark",
-  outline: "bg-white text-navy ring-2 ring-inset ring-navy hover:bg-mist",
+  primary: "bg-brand text-white shadow-[0_8px_20px_rgb(42_102_204/0.28)] hover:bg-brand-dark hover:shadow-[0_10px_24px_rgb(42_102_204/0.36)]",
+  outline: "bg-white text-navy ring-2 ring-inset ring-navy hover:bg-navy hover:text-white",
   white: "bg-white text-navy hover:bg-sky",
 };
 
@@ -25,7 +25,7 @@ export function Button({
   trailing?: IconName;
   className?: string;
 }) {
-  const cls = `inline-flex min-h-14 items-center justify-center gap-2.5 rounded-2xl px-7 text-[17px] font-semibold transition-colors ${variants[variant]} ${className}`;
+  const cls = `inline-flex min-h-14 items-center justify-center gap-2.5 rounded-2xl px-7 text-[17px] font-semibold transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] ${variants[variant]} ${className}`;
   const inner = (
     <>
       {icon && <Icon name={icon} />}
@@ -63,8 +63,11 @@ export function SectionHeading({
   className?: string;
 }) {
   return (
-    <div className={`${center ? "mx-auto text-center" : ""} ${className}`}>
-      <p className={`text-[13px] font-semibold tracking-[0.1em] uppercase ${light ? "text-brand-soft" : "text-brand"}`}>
+    <div className={`reveal ${center ? "mx-auto text-center" : ""} ${className}`}>
+      <p
+        className={`inline-flex items-center gap-2.5 text-[15px] font-bold ${light ? "text-brand-soft" : "text-brand"} ${center ? "justify-center" : ""}`}
+      >
+        <span aria-hidden className={`h-[3px] w-6 rounded-full ${light ? "bg-brand-soft" : "bg-brand"}`} />
         {eyebrow}
       </p>
       <H
@@ -124,9 +127,10 @@ export function PageHero({
   children?: ReactNode;
 }) {
   return (
-    <section className="bg-mist pt-8 pb-14 lg:pt-12 lg:pb-20">
+    <section className="relative overflow-hidden bg-mist pt-8 pb-14 lg:pt-12 lg:pb-20">
+      <div aria-hidden className="pointer-events-none absolute -top-40 -right-40 size-[560px] rounded-full bg-[radial-gradient(closest-side,rgb(42_102_204/0.14),transparent)]" />
       <JsonLd data={breadcrumbLd(crumbs, path)} />
-      <Container>
+      <Container className="relative">
         <Breadcrumbs items={crumbs} />
         <div className={`mt-8 grid items-center gap-10 ${image ? "lg:grid-cols-[1fr_520px] lg:gap-16" : ""}`}>
           <div className={image ? "" : "max-w-[820px]"}>
@@ -168,7 +172,7 @@ export function Faqs({ items }: { items: { q: string; a: string }[] }) {
   return (
     <div className="divide-y divide-line rounded-3xl border border-line bg-white">
       {items.map((f) => (
-        <details key={f.q} className="group px-6 py-5 lg:px-8">
+        <details key={f.q} className="group px-6 py-5 transition-colors open:bg-mist/60 hover:bg-mist/60 lg:px-8">
           <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-display text-lg font-bold text-navy [&::-webkit-details-marker]:hidden">
             {f.q}
             <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-sky text-brand transition-transform group-open:rotate-45">

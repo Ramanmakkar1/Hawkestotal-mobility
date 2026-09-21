@@ -18,6 +18,7 @@ export default function Home() {
   return (
     <>
       <Hero />
+      <TrustStrip />
       <Why />
       <section className="bg-white py-14 lg:py-28">
         <Container>
@@ -46,8 +47,9 @@ export default function Home() {
 
 function Hero() {
   return (
-    <section className="bg-white pt-8 pb-14 lg:pt-18 lg:pb-24">
-      <Container className="grid items-center gap-10 lg:grid-cols-[1fr_460px] lg:gap-12 xl:grid-cols-[1fr_520px]">
+    <section className="relative overflow-hidden bg-white pt-8 pb-20 lg:pt-18 lg:pb-32">
+      <div aria-hidden className="pointer-events-none absolute -top-48 -left-40 size-[640px] rounded-full bg-[radial-gradient(closest-side,rgb(42_102_204/0.10),transparent)]" />
+      <Container className="relative grid items-center gap-10 lg:grid-cols-[1fr_460px] lg:gap-12 xl:grid-cols-[1fr_520px]">
         <div>
           <p className="inline-flex items-center gap-2 rounded-full bg-sky px-3.5 py-2 text-sm font-semibold text-brand">
             <Icon name="pin" size={16} />
@@ -70,14 +72,6 @@ function Hero() {
               Book a ride
             </Button>
           </div>
-          <ul className="mt-7 flex flex-col gap-3 text-[15px] font-medium text-ink sm:flex-row sm:flex-wrap sm:gap-x-6">
-            {["Door-to-door help", "Wheelchair-accessible vans", "Local Hawke’s Bay drivers"].map((t) => (
-              <li key={t} className="flex items-center gap-2">
-                <Icon name="check" size={18} strokeWidth={3} className="text-brand" />
-                {t}
-              </li>
-            ))}
-          </ul>
         </div>
 
         <div className="relative lg:pr-10 lg:pb-10">
@@ -107,5 +101,37 @@ function Hero() {
         </div>
       </Container>
     </section>
+  );
+}
+
+const facts = [
+  { icon: "access", title: "Wheelchair-accessible vans", body: "Ramp access and secure restraints" },
+  { icon: "heart", title: "Door-to-door help", body: "From your front door to the entrance" },
+  { icon: "pin", title: "Local to Hawke’s Bay", body: "Napier, Hastings and surrounds" },
+  { icon: "phone", title: "Easy to book", body: "Call or text 027 352 1635" },
+] as const;
+
+function TrustStrip() {
+  return (
+    <div className="relative z-10 -mt-10 bg-[linear-gradient(transparent_50%,var(--color-mist)_50%)] lg:-mt-14">
+      <Container>
+        <ul className="grid grid-cols-2 overflow-hidden rounded-3xl bg-white shadow-float lg:grid-cols-4">
+          {facts.map((f, i) => (
+            <li
+              key={f.title}
+              className={`flex flex-col gap-3 p-5 sm:flex-row sm:items-center sm:gap-4 lg:p-7 ${i % 2 === 0 ? "border-r border-line" : ""} ${i < 2 ? "border-b border-line lg:border-b-0" : ""} ${i === 1 ? "lg:border-r" : ""}`}
+            >
+              <span className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-sky text-brand">
+                <Icon name={f.icon} size={24} />
+              </span>
+              <span>
+                <span className="block font-display text-[15px] font-bold text-navy sm:text-base">{f.title}</span>
+                <span className="mt-0.5 block text-sm text-ink">{f.body}</span>
+              </span>
+            </li>
+          ))}
+        </ul>
+      </Container>
+    </div>
   );
 }

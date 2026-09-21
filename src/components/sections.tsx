@@ -6,24 +6,28 @@ import { Button, CallButtons, Container, SectionHeading } from "./ui";
 
 export function Why() {
   return (
-    <section className="bg-mist py-14 lg:py-24">
-      <Container>
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between lg:gap-16">
-          <SectionHeading eyebrow="Why choose us" title="Transport you can count on." className="lg:max-w-[700px]" />
-          <p className="text-[17px] leading-relaxed text-ink lg:max-w-[440px] lg:text-[19px]">
-            Dependable accessible transport, delivered with care, comfort and local knowledge — so getting out never
-            feels like a hassle.
-          </p>
+    <section className="bg-mist py-16 lg:py-28">
+      <Container className="grid gap-10 lg:grid-cols-[5fr_7fr] lg:gap-20">
+        <div className="lg:sticky lg:top-32 lg:self-start">
+          <SectionHeading
+            eyebrow="Why choose us"
+            title="Transport you can count on."
+            intro="Dependable accessible transport, delivered with care, comfort and local knowledge — so getting out never feels like a hassle."
+          />
+          <Link href="/about" className="mt-7 inline-flex items-center gap-2 text-lg font-semibold text-brand hover:underline">
+            More about us <Icon name="arrow" />
+          </Link>
         </div>
-        <ul className="mt-10 grid gap-4 md:grid-cols-3 lg:mt-12 lg:gap-6">
-          {benefits.map((b) => (
-            <li key={b.title} className="flex gap-4 rounded-3xl bg-white p-5 shadow-card md:flex-col md:p-8">
-              <span className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-sky text-brand md:size-14">
-                <Icon name={b.icon} size={26} />
+        <ul className="divide-y divide-line overflow-hidden rounded-[28px] bg-white shadow-card">
+          {benefits.map((b, i) => (
+            <li key={b.title} className="reveal flex gap-5 p-6 sm:gap-7 sm:p-9">
+              <span className="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-brand text-white shadow-[0_8px_20px_rgb(42_102_204/0.25)] sm:size-16">
+                <Icon name={b.icon} size={28} />
               </span>
               <div>
-                <h3 className="font-display text-lg font-bold text-navy md:text-[22px]">{b.title}</h3>
-                <p className="mt-1.5 text-[15px] leading-relaxed text-ink md:mt-3 md:text-[17px]">{b.body}</p>
+                <p className="font-display text-sm font-bold text-brand">0{i + 1}</p>
+                <h3 className="mt-1 font-display text-xl font-bold text-navy sm:text-2xl">{b.title}</h3>
+                <p className="mt-2 text-[17px] leading-relaxed text-ink">{b.body}</p>
               </div>
             </li>
           ))}
@@ -40,25 +44,27 @@ export function ServiceGrid({ current }: { current?: string }) {
       {services.map((s) => {
         const isCurrent = s.slug === current;
         return (
-          <li key={s.slug}>
+          <li key={s.slug} className="reveal">
             <Link
               href={`/services/${s.slug}`}
               aria-current={isCurrent ? "page" : undefined}
-              className={`group relative flex h-full items-center gap-4 overflow-hidden rounded-2xl border bg-white p-2.5 transition-shadow hover:shadow-card sm:block sm:rounded-3xl sm:p-0 ${isCurrent ? "border-brand ring-2 ring-brand" : "border-line"}`}
+              className={`group relative flex h-full items-center gap-4 overflow-hidden rounded-2xl border bg-white p-2.5 transition-all duration-300 hover:-translate-y-1 hover:shadow-float sm:block sm:rounded-3xl sm:p-0 ${isCurrent ? "border-brand ring-2 ring-brand" : "border-line"}`}
             >
               {isCurrent && (
                 <span className="absolute top-3 right-3 z-10 rounded-full bg-brand px-3 py-1 text-xs font-semibold text-white sm:top-4 sm:right-4">
                   You’re viewing
                 </span>
               )}
-              <Image
-                src={`/images/${s.img}.jpg`}
-                alt=""
-                width={768}
-                height={480}
-                sizes="(min-width: 1024px) 384px, (min-width: 640px) 50vw, 96px"
-                className="size-24 shrink-0 rounded-xl object-cover sm:aspect-[8/5] sm:h-auto sm:w-full sm:rounded-none"
-              />
+              <span className="block size-24 shrink-0 overflow-hidden rounded-xl sm:aspect-[8/5] sm:h-auto sm:w-full sm:rounded-none">
+                <Image
+                  src={`/images/${s.img}.jpg`}
+                  alt=""
+                  width={768}
+                  height={480}
+                  sizes="(min-width: 1024px) 384px, (min-width: 640px) 50vw, 96px"
+                  className="size-full object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+              </span>
               <div className="sm:px-7 sm:pt-6 sm:pb-7">
                 <h3 className="font-display text-[17px] font-bold text-navy sm:text-[22px]">{s.title}</h3>
                 <p className="mt-1 text-sm leading-relaxed text-ink sm:mt-2.5 sm:text-base">{s.short}</p>
@@ -94,7 +100,7 @@ export function AboutSplit({ cta = true }: { cta?: boolean }) {
           />
           <ul className="mt-8 space-y-5">
             {aboutPoints.map((p) => (
-              <li key={p.title} className="flex gap-4">
+              <li key={p.title} className="reveal flex gap-4">
                 <span className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-full bg-brand text-white">
                   <Icon name="check" size={16} strokeWidth={3} />
                 </span>
@@ -127,19 +133,22 @@ export function HowItWorks() {
           center
           className="max-w-[720px]"
         />
-        <ol className="mt-10 grid gap-4 md:grid-cols-3 lg:mt-14 lg:gap-6">
+        <div className="relative mt-12 lg:mt-16">
+          <span aria-hidden className="absolute top-7 bottom-7 left-7 w-0.5 bg-line md:right-[16.66%] md:bottom-auto md:left-[16.66%] md:h-0.5 md:w-auto" />
+          <ol className="relative grid gap-8 md:grid-cols-3 md:gap-6">
           {steps.map((s, i) => (
-            <li key={s.title} className="flex gap-4 rounded-3xl bg-mist p-5 md:flex-col md:p-8">
-              <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-brand font-display text-lg font-extrabold text-white md:size-13 md:text-[22px]">
+            <li key={s.title} className="reveal relative flex gap-5 md:flex-col md:items-center md:text-center">
+              <span className="relative flex size-14 shrink-0 items-center justify-center rounded-full bg-brand font-display text-xl font-extrabold text-white ring-8 ring-white">
                 {i + 1}
               </span>
               <div>
-                <h3 className="font-display text-lg font-bold text-navy md:text-[22px]">{s.title}</h3>
-                <p className="mt-1 text-[15px] leading-relaxed text-ink md:mt-3 md:text-[17px]">{s.body}</p>
+                <h3 className="font-display text-xl font-bold text-navy md:mt-2 md:text-[22px]">{s.title}</h3>
+                <p className="mt-2 max-w-[300px] text-[17px] leading-relaxed text-ink">{s.body}</p>
               </div>
             </li>
           ))}
-        </ol>
+          </ol>
+        </div>
         <CallButtons className="mt-10 justify-center lg:mt-14" />
       </Container>
     </section>
@@ -163,7 +172,8 @@ export function CtaBand({
   return (
     <section className="bg-white py-14 lg:py-28">
       <Container>
-        <div className="grid overflow-hidden rounded-3xl bg-navy lg:grid-cols-[1fr_520px] lg:rounded-[32px]">
+        <div className="reveal relative grid overflow-hidden rounded-3xl bg-navy lg:grid-cols-[1fr_520px] lg:rounded-[32px]">
+          <div aria-hidden className="pointer-events-none absolute -bottom-32 -left-32 size-[420px] rounded-full bg-[radial-gradient(closest-side,rgb(42_102_204/0.35),transparent)]" />
           <Image
             src="/images/community.jpg"
             alt="Man in a wheelchair choosing fruit at a Hastings farmers market"
@@ -172,7 +182,7 @@ export function CtaBand({
             sizes="(min-width: 1024px) 520px, 100vw"
             className="aspect-[8/5] w-full object-cover lg:order-2 lg:aspect-auto lg:h-full"
           />
-          <div className="p-6 sm:p-10 lg:p-16">
+          <div className="relative p-6 sm:p-10 lg:p-16">
             <SectionHeading eyebrow={eyebrow} title={title} intro={intro} light />
             <ul className="mt-7 space-y-3">
               {["Stay connected with family and community", "Get to appointments and everyday essentials", "Travel locally with greater confidence"].map((v) => (

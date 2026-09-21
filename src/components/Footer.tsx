@@ -19,12 +19,12 @@ export function Footer() {
           <FooterCol title="Explore" links={nav} />
           <FooterCol title="Services" links={services.map((s) => ({ label: s.title, href: `/services/${s.slug}` }))} />
           <div>
-            <p className="text-[13px] font-semibold tracking-[0.1em] text-brand-soft uppercase">Book a ride</p>
+            <p className="text-[15px] font-bold text-brand-soft">Book a ride</p>
             <a href={site.phoneHref} className="mt-4 block font-display text-[28px] font-extrabold text-white">
               {site.phoneDisplay}
             </a>
             <p className="mt-2 text-[#b3c1d6]">Call or text to book</p>
-            <p className="mt-6 text-[13px] font-semibold tracking-[0.1em] text-brand-soft uppercase">Areas</p>
+            <p className="mt-6 text-[15px] font-bold text-brand-soft">Areas</p>
             <ul className="mt-3 flex flex-wrap gap-x-4 gap-y-2 font-medium">
               {areaPages.map((a) => (
                 <li key={a.slug}>
@@ -53,7 +53,7 @@ export function Footer() {
 function FooterCol({ title, links }: { title: string; links: { label: string; href: string }[] }) {
   return (
     <nav aria-label={title}>
-      <p className="text-[13px] font-semibold tracking-[0.1em] text-brand-soft uppercase">{title}</p>
+      <p className="text-[15px] font-bold text-brand-soft">{title}</p>
       <ul className="mt-4 space-y-3 font-medium">
         {links.map((l) => (
           <li key={l.href}>

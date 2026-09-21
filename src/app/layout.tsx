@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
-import { Inter, Montserrat } from "next/font/google";
+import { Atkinson_Hyperlegible_Next, Montserrat } from "next/font/google";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
+import { MobileCallBar } from "@/components/MobileCallBar";
 import { businessId, JsonLd } from "@/lib/seo";
 import { site } from "@/lib/site";
 import "./globals.css";
 
-const inter = Inter({ variable: "--font-inter", subsets: ["latin"] });
+// Designed for low-vision readers — a good fit for an accessibility-focused audience.
+const body = Atkinson_Hyperlegible_Next({ variable: "--font-body", subsets: ["latin"] });
 const montserrat = Montserrat({
   variable: "--font-montserrat",
   subsets: ["latin"],
@@ -46,8 +48,8 @@ const jsonLd = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en-NZ" className={`${inter.variable} ${montserrat.variable} antialiased`}>
-      <body className="font-sans">
+    <html lang="en-NZ" className={`${body.variable} ${montserrat.variable} antialiased`}>
+      <body className="pb-[76px] font-sans lg:pb-0">
         <JsonLd data={jsonLd} />
         <a
           href="#main"
@@ -58,6 +60,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <Header />
         <main id="main">{children}</main>
         <Footer />
+        <MobileCallBar />
       </body>
     </html>
   );
