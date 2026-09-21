@@ -1,13 +1,15 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { nav, site } from "@/lib/site";
 import { Icon } from "./icons";
 
 export function Logo({ compact = false }: { compact?: boolean }) {
   return (
-    <a href="#top" className="flex items-center gap-3" aria-label={`${site.name} — home`}>
+    <Link href="/" className="flex items-center gap-3" aria-label={`${site.name} — home`}>
       <Image
         src="/images/logo-emblem.png"
         alt=""
@@ -23,12 +25,14 @@ export function Logo({ compact = false }: { compact?: boolean }) {
           HONEST RELIABLE SERVICE
         </span>
       </span>
-    </a>
+    </Link>
   );
 }
 
 export function Header() {
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
+  const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname.startsWith(href));
 
   return (
     <header className="sticky top-0 z-50 border-b border-line bg-white/95 backdrop-blur">
@@ -36,18 +40,19 @@ export function Header() {
         <Logo />
 
         <nav aria-label="Main" className="hidden lg:block">
-          <ul className="flex items-center gap-9">
-            {nav.map((item, i) => (
+          <ul className="flex items-center gap-6 xl:gap-8">
+            {nav.map((item) => (
               <li key={item.href}>
-                <a
+                <Link
                   href={item.href}
-                  className={`group relative py-2 text-base ${i === 0 ? "font-semibold text-navy" : "font-medium text-ink hover:text-navy"}`}
+                  aria-current={isActive(item.href) ? "page" : undefined}
+                  className={`group relative py-2 text-[15px] xl:text-base ${isActive(item.href) ? "font-semibold text-navy" : "font-medium text-ink hover:text-navy"}`}
                 >
                   {item.label}
                   <span
-                    className={`absolute inset-x-0 -bottom-0.5 mx-auto h-[3px] w-6 rounded-full bg-brand transition-opacity ${i === 0 ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}
+                    className={`absolute inset-x-0 -bottom-0.5 mx-auto h-[3px] w-6 rounded-full bg-brand transition-opacity ${isActive(item.href) ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}
                   />
-                </a>
+                </Link>
               </li>
             ))}
           </ul>
@@ -56,10 +61,10 @@ export function Header() {
         <div className="flex items-center gap-2">
           <a
             href={site.phoneHref}
-            className="inline-flex min-h-12 items-center gap-2.5 rounded-xl bg-brand px-3.5 font-semibold text-white hover:bg-brand-dark lg:px-6"
+            className="inline-flex min-h-12 items-center gap-2.5 rounded-xl bg-brand px-3.5 font-semibold text-white hover:bg-brand-dark xl:px-6"
           >
             <Icon name="phone" />
-            <span className="sr-only lg:not-sr-only">{site.phoneDisplay}</span>
+            <span className="sr-only xl:not-sr-only">{site.phoneDisplay}</span>
           </a>
           <button
             type="button"
@@ -79,13 +84,14 @@ export function Header() {
           <ul className="flex flex-col">
             {nav.map((item) => (
               <li key={item.href}>
-                <a
+                <Link
                   href={item.href}
                   onClick={() => setOpen(false)}
-                  className="block border-b border-line py-4 text-lg font-medium text-navy"
+                  aria-current={isActive(item.href) ? "page" : undefined}
+                  className={`block border-b border-line py-4 text-lg text-navy ${isActive(item.href) ? "font-bold" : "font-medium"}`}
                 >
                   {item.label}
-                </a>
+                </Link>
               </li>
             ))}
           </ul>

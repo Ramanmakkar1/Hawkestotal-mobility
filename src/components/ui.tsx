@@ -1,3 +1,5 @@
+import Image from "next/image";
+import Link from "next/link";
 import type { ReactNode } from "react";
 import { Icon, type IconName } from "./icons";
 
@@ -22,14 +24,22 @@ export function Button({
   trailing?: IconName;
   className?: string;
 }) {
-  return (
-    <a
-      href={href}
-      className={`inline-flex min-h-14 items-center justify-center gap-2.5 rounded-2xl px-7 text-[17px] font-semibold transition-colors ${variants[variant]} ${className}`}
-    >
+  const cls = `inline-flex min-h-14 items-center justify-center gap-2.5 rounded-2xl px-7 text-[17px] font-semibold transition-colors ${variants[variant]} ${className}`;
+  const inner = (
+    <>
       {icon && <Icon name={icon} />}
       {children}
       {trailing && <Icon name={trailing} />}
+    </>
+  );
+  // tel:/sms: links must stay plain anchors; internal routes get client navigation.
+  return href.startsWith("/") ? (
+    <Link href={href} className={cls}>
+      {inner}
+    </Link>
+  ) : (
+    <a href={href} className={cls}>
+      {inner}
     </a>
   );
 }
@@ -40,6 +50,7 @@ export function SectionHeading({
   intro,
   light = false,
   center = false,
+  as: H = "h2",
   className = "",
 }: {
   eyebrow: string;
@@ -47,6 +58,7 @@ export function SectionHeading({
   intro?: ReactNode;
   light?: boolean;
   center?: boolean;
+  as?: "h1" | "h2";
   className?: string;
 }) {
   return (
@@ -54,11 +66,11 @@ export function SectionHeading({
       <p className={`text-[13px] font-semibold tracking-[0.1em] uppercase ${light ? "text-brand-soft" : "text-brand"}`}>
         {eyebrow}
       </p>
-      <h2
+      <H
         className={`mt-4 font-display text-[30px] leading-[1.12] font-extrabold tracking-tight text-balance sm:text-[44px] ${light ? "text-white" : "text-navy"}`}
       >
         {title}
-      </h2>
+      </H>
       {intro && (
         <p className={`mt-4 text-[17px] leading-relaxed sm:text-[19px] ${light ? "text-[#d5deec]" : "text-ink"}`}>{intro}</p>
       )}
@@ -67,5 +79,101 @@ export function SectionHeading({
 }
 
 export function Container({ children, className = "" }: { children: ReactNode; className?: string }) {
-  return <div className={`mx-auto w-full max-w-[1200px] px-5 lg:px-0 ${className}`}>{children}</div>;
+  return <div className={`mx-auto w-full max-w-[1200px] px-5 lg:px-8 xl:px-0 ${className}`}>{children}</div>;
+}
+
+export function Breadcrumbs({ items }: { items: { label: string; href?: string }[] }) {
+  return (
+    <nav aria-label="Breadcrumb" className="text-sm text-ink">
+      <ol className="flex flex-wrap items-center gap-2">
+        {items.map((item, i) => (
+          <li key={item.label} className="flex items-center gap-2">
+            {i > 0 && <span aria-hidden>/</span>}
+            {item.href ? (
+              <Link href={item.href} className="font-medium text-brand hover:underline">
+                {item.label}
+              </Link>
+            ) : (
+              <span aria-current="page">{item.label}</span>
+            )}
+          </li>
+        ))}
+      </ol>
+    </nav>
+  );
+}
+
+/** Top-of-page banner for inner pages: breadcrumb, H1, intro, optional photo. */
+export function PageHero({
+  eyebrow,
+  title,
+  intro,
+  crumbs,
+  image,
+  children,
+}: {
+  eyebrow: string;
+  title: ReactNode;
+  intro: ReactNode;
+  crumbs: { label: string; href?: string }[];
+  image?: { src: string; alt: string };
+  children?: ReactNode;
+}) {
+  return (
+    <section className="bg-mist pt-8 pb-14 lg:pt-12 lg:pb-20">
+      <Container>
+        <Breadcrumbs items={crumbs} />
+        <div className={`mt-8 grid items-center gap-10 ${image ? "lg:grid-cols-[1fr_520px] lg:gap-16" : ""}`}>
+          <div className={image ? "" : "max-w-[820px]"}>
+            <SectionHeading as="h1" eyebrow={eyebrow} title={title} intro={intro} />
+            {children && <div className="mt-8">{children}</div>}
+          </div>
+          {image && (
+            <Image
+              src={image.src}
+              alt={image.alt}
+              width={1536}
+              height={1024}
+              priority
+              sizes="(min-width: 1024px) 520px, 100vw"
+              className="aspect-[3/2] w-full rounded-3xl object-cover lg:rounded-[32px]"
+            />
+          )}
+        </div>
+      </Container>
+    </section>
+  );
+}
+
+export function CallButtons({ light = false, className = "" }: { light?: boolean; className?: string }) {
+  return (
+    <div className={`flex flex-col gap-3 sm:flex-row sm:gap-4 ${className}`}>
+      <Button href="tel:+64273521635" icon="phone" variant={light ? "white" : "primary"}>
+        Call 027 352 1635
+      </Button>
+      <Button href="/contact" variant={light ? "primary" : "outline"} icon="calendar">
+        Book a ride
+      </Button>
+    </div>
+  );
+}
+
+export function Faqs({ items }: { items: { q: string; a: string }[] }) {
+  return (
+    <div className="divide-y divide-line rounded-3xl border border-line bg-white">
+      {items.map((f) => (
+        <details key={f.q} className="group px-6 py-5 lg:px-8">
+          <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-display text-lg font-bold text-navy [&::-webkit-details-marker]:hidden">
+            {f.q}
+            <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-sky text-brand transition-transform group-open:rotate-45">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden>
+                <path d="M12 5v14M5 12h14" />
+              </svg>
+            </span>
+          </summary>
+          <p className="mt-3 leading-relaxed text-ink">{f.a}</p>
+        </details>
+      ))}
+    </div>
+  );
 }
