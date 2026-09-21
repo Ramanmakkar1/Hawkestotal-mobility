@@ -24,10 +24,10 @@ export const benefits = [
 
 export const services = [
   { img: "van-hospital", title: "Medical appointments", body: "Hospitals, clinics, GP visits and specialist appointments — on time, every time." },
-  { img: "wheelchair", title: "Wheelchair transport", body: "Comfortable wheelchair-accessible rides with door-to-door assistance." },
-  { img: "shopping", title: "Shopping & errands", body: "Groceries, banking, prescriptions and everyday essentials, made easy." },
+  { img: "van-wheelchair", title: "Wheelchair transport", body: "Comfortable wheelchair-accessible rides with door-to-door assistance." },
+  { img: "van-shopping", title: "Shopping & errands", body: "Groceries, banking, prescriptions and everyday essentials, made easy." },
   { img: "social", title: "Social outings", body: "Stay connected with family, friends, community activities and local events." },
-  { img: "airport", title: "Airport transfers", body: "Pre-booked accessible transport to and from Hawke’s Bay Airport." },
+  { img: "van-airport", title: "Airport transfers", body: "Pre-booked accessible transport to and from Hawke’s Bay Airport." },
   { img: "van-driving", title: "Local area travel", body: "Point-to-point trips throughout Napier, Hastings and wider Hawke’s Bay." },
 ];
 
