@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { breadcrumbLd, JsonLd } from "@/lib/seo";
 import { Icon, type IconName } from "./icons";
 
 const variants = {
@@ -109,6 +110,7 @@ export function PageHero({
   title,
   intro,
   crumbs,
+  path,
   image,
   children,
 }: {
@@ -116,11 +118,14 @@ export function PageHero({
   title: ReactNode;
   intro: ReactNode;
   crumbs: { label: string; href?: string }[];
+  /** This page's path — used for the BreadcrumbList structured data. */
+  path: string;
   image?: { src: string; alt: string };
   children?: ReactNode;
 }) {
   return (
     <section className="bg-mist pt-8 pb-14 lg:pt-12 lg:pb-20">
+      <JsonLd data={breadcrumbLd(crumbs, path)} />
       <Container>
         <Breadcrumbs items={crumbs} />
         <div className={`mt-8 grid items-center gap-10 ${image ? "lg:grid-cols-[1fr_520px] lg:gap-16" : ""}`}>
@@ -134,7 +139,8 @@ export function PageHero({
               alt={image.alt}
               width={1536}
               height={1024}
-              priority
+              loading="eager"
+              fetchPriority="high"
               sizes="(min-width: 1024px) 520px, 100vw"
               className="aspect-[3/2] w-full rounded-3xl object-cover lg:rounded-[32px]"
             />

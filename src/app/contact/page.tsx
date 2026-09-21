@@ -1,15 +1,16 @@
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/seo";
 import { BookingForm } from "@/components/BookingForm";
 import { Icon, type IconName } from "@/components/icons";
 import { Container, Faqs, PageHero, SectionHeading } from "@/components/ui";
 import { site } from "@/lib/site";
 
-export const metadata: Metadata = {
-  title: "Contact & Book a Ride",
+export const metadata: Metadata = pageMeta({
+  title: "Book a Ride — Contact Us",
   description:
     "Book accessible door-to-door transport in Hawke’s Bay. Call or text 027 352 1635, or send a booking request online.",
-  alternates: { canonical: "/contact" },
-};
+  path: "/contact",
+});
 
 const ways: { icon: IconName; title: string; body: string; href: string; cta: string }[] = [
   { icon: "phone", title: "Call us", body: "The quickest way to book or ask a question.", href: site.phoneHref, cta: site.phoneDisplay },
@@ -31,6 +32,7 @@ export default function ContactPage() {
         title="Book a ride."
         intro="Call or text 027 352 1635, or send us your trip details below. We’ll confirm your booking and pickup time."
         crumbs={[{ label: "Home", href: "/" }, { label: "Contact" }]}
+        path="/contact"
       />
 
       <section className="bg-mist pb-14 lg:pb-24">

@@ -1,15 +1,16 @@
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/seo";
 import Image from "next/image";
 import { Icon, type IconName } from "@/components/icons";
 import { AboutSplit, CtaBand } from "@/components/sections";
 import { CallButtons, Container, PageHero, SectionHeading } from "@/components/ui";
 
-export const metadata: Metadata = {
-  title: "About Us",
+export const metadata: Metadata = pageMeta({
+  title: "About Us — Accessible Transport",
   description:
     "Hawke’s Bay Total Mobility is a local, door-to-door accessible transport service for Napier, Hastings and Hawke’s Bay. Honest, reliable service. Call 027 352 1635.",
-  alternates: { canonical: "/about" },
-};
+  path: "/about",
+});
 
 const values: { icon: IconName; title: string; body: string }[] = [
   {
@@ -46,6 +47,7 @@ export default function AboutPage() {
         title="Local, accessible transport — done properly."
         intro="Hawke’s Bay Total Mobility helps people who find it hard to get around keep living independently. We provide door-to-door transport in wheelchair-accessible vans across Napier, Hastings and wider Hawke’s Bay."
         crumbs={[{ label: "Home", href: "/" }, { label: "About" }]}
+        path="/about"
         image={{ src: "/images/van-ramp.jpg", alt: "Driver helping a woman in a wheelchair up the ramp of the Hawke’s Bay Total Mobility van" }}
       >
         <CallButtons />

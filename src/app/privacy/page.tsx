@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/seo";
 import { Container, PageHero } from "@/components/ui";
 import { site } from "@/lib/site";
 
-export const metadata: Metadata = {
-  title: "Privacy",
-  description: "How Hawke’s Bay Total Mobility handles the personal information you share when booking a ride.",
-  alternates: { canonical: "/privacy" },
-};
+export const metadata: Metadata = pageMeta({
+  title: "Privacy Policy",
+  description:
+    "How Hawke’s Bay Total Mobility handles the personal information you share when booking a ride.",
+  path: "/privacy",
+});
 
 const sections = [
   {
@@ -35,6 +37,7 @@ export default function PrivacyPage() {
         title="Your privacy."
         intro="We only collect what we need to get you where you’re going, and we keep it safe."
         crumbs={[{ label: "Home", href: "/" }, { label: "Privacy" }]}
+        path="/privacy"
       />
       <section className="bg-white py-14 lg:py-20">
         <Container className="max-w-[820px] space-y-10">

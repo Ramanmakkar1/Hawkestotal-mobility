@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { nav, services, site } from "@/lib/site";
+import { areaPages, nav, services, site } from "@/lib/site";
 import { Container } from "./ui";
 
 export function Footer() {
@@ -9,7 +9,7 @@ export function Footer() {
       <Container>
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.3fr_1fr_1.2fr_1fr] lg:gap-12">
           <div>
-            <Link href="/" className="inline-block rounded-2xl bg-white px-4 py-3" aria-label={`${site.name} — home`}>
+            <Link href="/" className="inline-block rounded-2xl bg-white px-4 py-3">
               <Image src="/images/logo-full.png" alt={site.name} width={603} height={493} className="h-auto w-40 lg:w-44" />
             </Link>
             <p className="mt-5 max-w-[320px] leading-relaxed text-[#b3c1d6]">
@@ -24,6 +24,16 @@ export function Footer() {
               {site.phoneDisplay}
             </a>
             <p className="mt-2 text-[#b3c1d6]">Call or text to book</p>
+            <p className="mt-6 text-[13px] font-semibold tracking-[0.1em] text-brand-soft uppercase">Areas</p>
+            <ul className="mt-3 flex flex-wrap gap-x-4 gap-y-2 font-medium">
+              {areaPages.map((a) => (
+                <li key={a.slug}>
+                  <Link href={`/service-areas/${a.slug}`} className="hover:text-white">
+                    {a.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
             <p className="mt-4 text-[#b3c1d6]">{site.tagline}</p>
           </div>
         </div>

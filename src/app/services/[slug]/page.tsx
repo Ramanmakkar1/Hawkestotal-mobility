@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { Icon } from "@/components/icons";
 import { CtaBand, HowItWorks, ServiceGrid } from "@/components/sections";
 import { CallButtons, Container, Faqs, PageHero, SectionHeading } from "@/components/ui";
+import { abs, businessId, JsonLd, pageMeta } from "@/lib/seo";
 import { services, site } from "@/lib/site";
 
 export const dynamicParams = false;
@@ -17,12 +18,12 @@ const find = (slug: string) => services.find((s) => s.slug === slug);
 export async function generateMetadata({ params }: PageProps<"/services/[slug]">): Promise<Metadata> {
   const s = find((await params).slug);
   if (!s) return {};
-  return {
+  return pageMeta({
     title: `${s.title} in Hawke’s Bay`,
     description: s.metaDescription,
-    alternates: { canonical: `/services/${s.slug}` },
-    openGraph: { images: [`/images/${s.img}.jpg`] },
-  };
+    path: `/services/${s.slug}`,
+    image: `/images/${s.img}.jpg`,
+  });
 }
 
 export default async function ServicePage({ params }: PageProps<"/services/[slug]">) {
@@ -37,12 +38,26 @@ export default async function ServicePage({ params }: PageProps<"/services/[slug
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }} />
+      <JsonLd data={faqLd} />
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "Service",
+          name: s.title,
+          description: s.metaDescription,
+          serviceType: "Accessible door-to-door transport",
+          url: abs(`/services/${s.slug}`),
+          image: abs(`/images/${s.img}.jpg`),
+          provider: { "@id": businessId },
+          areaServed: { "@type": "AdministrativeArea", name: "Hawke’s Bay" },
+        }}
+      />
       <PageHero
         eyebrow="Our services"
         title={s.title}
         intro={s.intro}
         crumbs={[{ label: "Home", href: "/" }, { label: "Services", href: "/services" }, { label: s.title }]}
+        path={`/services/${s.slug}`}
         image={{ src: `/images/${s.img}.jpg`, alt: s.alt }}
       >
         <CallButtons />
@@ -105,9 +120,9 @@ export default async function ServicePage({ params }: PageProps<"/services/[slug
 
       <section className="bg-mist py-14 lg:py-24">
         <Container>
-          <SectionHeading eyebrow="More services" title="Other ways we can help." />
+          <SectionHeading eyebrow="All services" title="Other ways we can help." />
           <div className="mt-10">
-            <ServiceGrid exclude={s.slug} />
+            <ServiceGrid current={s.slug} />
           </div>
         </Container>
       </section>

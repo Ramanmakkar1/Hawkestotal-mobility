@@ -9,13 +9,13 @@ import { Icon } from "./icons";
 
 export function Logo({ compact = false }: { compact?: boolean }) {
   return (
-    <Link href="/" className="flex items-center gap-3" aria-label={`${site.name} — home`}>
+    <Link href="/" className="flex items-center gap-3">
       <Image
         src="/images/logo-emblem.png"
         alt=""
         width={454}
         height={311}
-        priority
+        loading="eager"
         className={compact ? "h-11 w-auto" : "h-11 w-auto lg:h-[60px]"}
       />
       <span className="font-display leading-[1.1]">

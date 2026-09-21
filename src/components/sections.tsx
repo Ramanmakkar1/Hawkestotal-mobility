@@ -33,17 +33,24 @@ export function Why() {
   );
 }
 
-export function ServiceGrid({ exclude }: { exclude?: string }) {
+/** Always all six services, so the grid is two full rows of three. `current` marks the page you are on. */
+export function ServiceGrid({ current }: { current?: string }) {
   return (
     <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
-      {services
-        .filter((s) => s.slug !== exclude)
-        .map((s) => (
+      {services.map((s) => {
+        const isCurrent = s.slug === current;
+        return (
           <li key={s.slug}>
             <Link
               href={`/services/${s.slug}`}
-              className="group flex h-full items-center gap-4 overflow-hidden rounded-2xl border border-line bg-white p-2.5 transition-shadow hover:shadow-card sm:block sm:rounded-3xl sm:p-0"
+              aria-current={isCurrent ? "page" : undefined}
+              className={`group relative flex h-full items-center gap-4 overflow-hidden rounded-2xl border bg-white p-2.5 transition-shadow hover:shadow-card sm:block sm:rounded-3xl sm:p-0 ${isCurrent ? "border-brand ring-2 ring-brand" : "border-line"}`}
             >
+              {isCurrent && (
+                <span className="absolute top-3 right-3 z-10 rounded-full bg-brand px-3 py-1 text-xs font-semibold text-white sm:top-4 sm:right-4">
+                  You’re viewing
+                </span>
+              )}
               <Image
                 src={`/images/${s.img}.jpg`}
                 alt=""
@@ -61,7 +68,8 @@ export function ServiceGrid({ exclude }: { exclude?: string }) {
               </div>
             </Link>
           </li>
-        ))}
+        );
+      })}
     </ul>
   );
 }

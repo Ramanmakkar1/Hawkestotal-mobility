@@ -184,13 +184,122 @@ export const steps = [
   { title: "Travel with confidence", body: "We arrive on time, assist you and get you there comfortably." },
 ];
 
-export const areas = [
-  { name: "Napier", body: "Including Napier Hill, Ahuriri, Marewa, Onekawa, Tamatea and the Marine Parade." },
-  { name: "Hastings", body: "Including Hastings central, Mahora, Parkvale, Akina and trips to Hawke’s Bay Hospital." },
-  { name: "Havelock North", body: "Village trips, appointments and visits around Havelock North and Te Mata." },
-  { name: "Taradale", body: "Taradale, Greenmeadows, Pirimai and the surrounding suburbs." },
+export const areas: { name: string; body: string; slug?: string }[] = [
+  { name: "Napier", slug: "napier", body: "Including Napier Hill, Ahuriri, Marewa, Onekawa, Tamatea and the Marine Parade." },
+  { name: "Hastings", slug: "hastings", body: "Including Hastings central, Mahora, Parkvale, Akina and trips to Hawke’s Bay Hospital." },
+  { name: "Havelock North", slug: "havelock-north", body: "Village trips, appointments and visits around Havelock North and Te Mata." },
+  { name: "Taradale", slug: "taradale", body: "Taradale, Greenmeadows, Pirimai and the surrounding suburbs." },
   { name: "Flaxmere", body: "Local trips around Flaxmere and into Hastings." },
   { name: "Clive & Haumoana", body: "Clive, Haumoana, Te Awanga and the coastal villages." },
   { name: "Bay View & Eskdale", body: "Northern Napier suburbs and rural pickups on request." },
   { name: "Wider Hawke’s Bay", body: "Longer trips across the region can be arranged — call or text us to check." },
+];
+
+export type AreaPage = {
+  slug: string;
+  name: string;
+  metaTitle: string;
+  metaDescription: string;
+  img: string;
+  imgAlt: string;
+  intro: string;
+  trips: { title: string; body: string }[];
+  local: string;
+  faqs: { q: string; a: string }[];
+};
+
+/** Hand-written town pages — each one has its own trips and local detail, not a template swap. */
+export const areaPages: AreaPage[] = [
+  {
+    slug: "napier",
+    name: "Napier",
+    metaTitle: "Wheelchair Transport in Napier",
+    metaDescription:
+      "Door-to-door wheelchair and mobility transport in Napier — appointments, shopping, the airport and trips to Hastings hospital. Call 027 352 1635.",
+    img: "van-ramp",
+    imgAlt: "Driver helping a woman in a wheelchair into the Hawke’s Bay Total Mobility van on Napier’s Marine Parade",
+    intro:
+      "From Napier Hill to Tamatea and Bay View, we provide wheelchair-accessible, door-to-door transport around Napier — and across to Hastings when your appointment is at the hospital.",
+    trips: [
+      { title: "Hospital trips to Hastings", body: "Hawke’s Bay Hospital is in Hastings. We’ll take you there from your door in Napier and bring you home again." },
+      { title: "Hawke’s Bay Airport", body: "The airport is on Napier’s doorstep at Westshore — we’ll get you and your luggage to the terminal kerb." },
+      { title: "Shopping & the city centre", body: "Supermarkets, pharmacies, banks and the Napier CBD, with a hand for your bags." },
+      { title: "The Marine Parade & outings", body: "Cafés, the waterfront, family visits and community groups across Napier." },
+    ],
+    local:
+      "Napier’s hills and busy central streets can make getting around hard with a wheelchair or walker. We pick you up at your door — including homes on Napier Hill — and drop you right at the entrance you need.",
+    faqs: [
+      { q: "Do you cover Napier Hill?", a: "Yes. We pick up from homes on Napier Hill and help you from your door to the van." },
+      { q: "Can you take me from Napier to Hawke’s Bay Hospital in Hastings?", a: "Yes — hospital trips from Napier to Hastings are one of our most common journeys. Book ahead and let us know your appointment time." },
+    ],
+  },
+  {
+    slug: "hastings",
+    name: "Hastings",
+    metaTitle: "Wheelchair Transport in Hastings",
+    metaDescription:
+      "Door-to-door wheelchair and mobility transport in Hastings — Hawke’s Bay Hospital, GP visits, shopping and social outings. Call 027 352 1635.",
+    img: "van-hospital",
+    imgAlt: "Driver helping a man with a walking frame out of the Hawke’s Bay Total Mobility van at a hospital entrance",
+    intro:
+      "Around Hastings, Flaxmere, Mahora and Akina, we provide door-to-door accessible transport — including trips to Hawke’s Bay Hospital and back.",
+    trips: [
+      { title: "Hawke’s Bay Hospital", body: "Outpatient appointments, specialist visits and treatments — we drop you at the right entrance and collect you afterwards." },
+      { title: "GP, dental & physio", body: "Regular appointments around Hastings, with help in and out of the van." },
+      { title: "Shopping & errands", body: "Hastings CBD, supermarkets and pharmacies, with a hand for your bags." },
+      { title: "Flaxmere & Havelock North", body: "Local trips between Hastings, Flaxmere and Havelock North." },
+    ],
+    local:
+      "With the region’s main hospital in Hastings, a lot of our trips start or finish here. Tell us your appointment time and ward or clinic when you book, and we’ll plan the pickup around it.",
+    faqs: [
+      { q: "Can you wait for me at the hospital?", a: "Appointment times vary, so call or text us when you’re finished and we’ll arrange your pickup." },
+      { q: "Do you cover Flaxmere?", a: "Yes — Flaxmere and the surrounding Hastings suburbs are part of our regular area." },
+    ],
+  },
+  {
+    slug: "havelock-north",
+    name: "Havelock North",
+    metaTitle: "Wheelchair Transport Havelock North",
+    metaDescription:
+      "Door-to-door wheelchair and mobility transport in Havelock North — village trips, appointments and hospital visits in Hastings. Call 027 352 1635.",
+    img: "social",
+    imgAlt: "Friends having coffee together at a café, one in a wheelchair",
+    intro:
+      "We provide door-to-door accessible transport around Havelock North — into the village, to appointments, and to Hastings for hospital visits.",
+    trips: [
+      { title: "The village", body: "Cafés, shops, the library and appointments in the Havelock North village centre." },
+      { title: "Hospital & specialists", body: "Trips to Hawke’s Bay Hospital and specialist rooms in Hastings." },
+      { title: "Family & social visits", body: "Lunches, visits to friends and family, clubs and church." },
+      { title: "Across the Bay", body: "Longer trips to Napier, Taradale or the airport when you need them." },
+    ],
+    local:
+      "Havelock North is close to Hastings, which makes hospital and specialist trips quick. We’ll collect you from your door, whether you’re in the village or out towards Te Mata.",
+    faqs: [
+      { q: "Do you pick up outside the village centre?", a: "Yes — we collect from homes across Havelock North, including out towards Te Mata." },
+      { q: "Can I book a regular weekly outing?", a: "Yes. Tell us your day and time and we’ll set up a regular booking." },
+    ],
+  },
+  {
+    slug: "taradale",
+    name: "Taradale",
+    metaTitle: "Wheelchair Transport in Taradale",
+    metaDescription:
+      "Door-to-door wheelchair and mobility transport in Taradale, Greenmeadows and Pirimai — appointments, shopping and hospital trips. Call 027 352 1635.",
+    img: "van-shopping",
+    imgAlt: "Driver carrying grocery bags beside a woman with a walking stick next to the Hawke’s Bay Total Mobility van",
+    intro:
+      "Around Taradale, Greenmeadows and Pirimai, we provide door-to-door accessible transport for appointments, shopping and trips further afield.",
+    trips: [
+      { title: "Taradale shops", body: "The Taradale town centre, supermarkets and pharmacies, with help carrying your shopping." },
+      { title: "Medical appointments", body: "Local GPs and clinics, and trips to Hawke’s Bay Hospital in Hastings." },
+      { title: "Into Napier", body: "The Napier CBD, the Marine Parade and visits around the city." },
+      { title: "Social outings", body: "Clubs, church, cafés and family visits around Taradale and Greenmeadows." },
+    ],
+    local:
+      "Taradale sits between Napier and Hastings, so it’s well placed for hospital trips and for getting into Napier. We’ll pick you up from your door and help you all the way.",
+    faqs: [
+      { q: "Do you cover Greenmeadows and Pirimai?", a: "Yes — both are part of our regular Taradale area." },
+      { q: "How far ahead should I book?", a: "As early as you can for appointments. For same-day trips, call and we’ll do our best." },
+    ],
+  },
 ];

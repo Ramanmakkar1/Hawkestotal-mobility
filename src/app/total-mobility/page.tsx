@@ -1,14 +1,16 @@
 import type { Metadata } from "next";
+import { JsonLd, pageMeta } from "@/lib/seo";
 import { Icon } from "@/components/icons";
 import { CtaBand } from "@/components/sections";
 import { CallButtons, Container, Faqs, PageHero, SectionHeading } from "@/components/ui";
 
-export const metadata: Metadata = {
-  title: "Total Mobility Scheme in Hawke’s Bay",
+export const metadata: Metadata = pageMeta({
+  title: "Total Mobility Card Transport",
   description:
     "How the Total Mobility scheme works in Hawke’s Bay, who is eligible, and how to use your Total Mobility card with Hawke’s Bay Total Mobility. Call 027 352 1635.",
-  alternates: { canonical: "/total-mobility" },
-};
+  path: "/total-mobility",
+  image: "/images/van-wheelchair.jpg",
+});
 
 const steps = [
   {
@@ -57,12 +59,13 @@ export default function TotalMobilityPage() {
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }} />
+      <JsonLd data={faqLd} />
       <PageHero
         eyebrow="Total Mobility"
         title="Travel with your Total Mobility card."
         intro="The Total Mobility scheme helps people with long-term impairments get around by reducing the cost of their trips. Tell us you’re a cardholder when you book, and we’ll take care of the rest."
         crumbs={[{ label: "Home", href: "/" }, { label: "Total Mobility" }]}
+        path="/total-mobility"
         image={{
           src: "/images/van-wheelchair.jpg",
           alt: "Driver guiding a man in a wheelchair onto the rear ramp of the Hawke’s Bay Total Mobility van",

@@ -3,7 +3,16 @@ import Link from "next/link";
 import { Icon } from "@/components/icons";
 import { AboutSplit, CtaBand, HowItWorks, ServiceGrid, Why } from "@/components/sections";
 import { Button, Container, SectionHeading } from "@/components/ui";
+import { pageMeta } from "@/lib/seo";
 import { site } from "@/lib/site";
+
+export const metadata = pageMeta({
+  title: "Wheelchair Transport Hawke’s Bay | Hawke’s Bay Total Mobility",
+  description:
+    "Door-to-door wheelchair and mobility transport in Napier, Hastings and Hawke’s Bay — appointments, shopping, outings and airport trips. Call 027 352 1635.",
+  path: "/",
+  absoluteTitle: true,
+});
 
 export default function Home() {
   return (
@@ -78,7 +87,8 @@ function Hero() {
             alt="Hawke’s Bay Total Mobility driver helping a woman in a wheelchair up the ramp of our branded van on Napier’s Marine Parade"
             width={1536}
             height={1024}
-            priority
+            loading="eager"
+            fetchPriority="high"
             sizes="(min-width: 1024px) 480px, 100vw"
             className="relative aspect-[4/3] w-full rounded-3xl object-cover object-[35%_center] lg:aspect-[5/4] lg:rounded-[32px]"
           />
