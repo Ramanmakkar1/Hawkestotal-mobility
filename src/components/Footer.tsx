@@ -37,13 +37,17 @@ export function Footer() {
             <p className="mt-4 text-[#b3c1d6]">{site.tagline}</p>
           </div>
         </div>
-        <div className="mt-12 flex flex-col gap-3 border-t border-[#1c2a40] pt-6 text-sm text-[#8a99b0] sm:flex-row sm:justify-between">
+        <div className="mt-12 flex flex-col gap-3 border-t border-[#1c2a40] pt-6 text-sm text-[#b3c1d6] sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
           <span>
             © {new Date().getFullYear()} {site.name}. All rights reserved.
           </span>
           <Link href="/privacy" className="hover:text-white">
             Privacy
           </Link>
+          <a href="https://kiwitechlabs.com" target="_blank" rel="noopener noreferrer" className="kiwitech-credit">
+            <Image src="/assets/brand/kiwitechlabs-logo.webp" width={40} height={40} alt="" unoptimized />
+            <span>Designed by <strong>kiwitechlabs.com</strong></span>
+          </a>
         </div>
       </Container>
     </footer>
