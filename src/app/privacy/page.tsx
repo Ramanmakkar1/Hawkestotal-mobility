@@ -21,7 +21,7 @@ const sections = [
   },
   {
     h: "This website",
-    p: "The online booking form does not store your details on this website. It prepares a text message or email on your own device, which you choose to send to us.",
+    p: "When you submit an online booking request, your details are sent securely to Splitforms, our form processing provider, which stores the request and sends us a notification. Splitforms also helps us understand form usage and incomplete requests. We use your booking details to arrange your trip and contact you. You can also book by calling or texting us.",
   },
   {
     h: "Your rights",

@@ -1,20 +1,25 @@
 "use client";
 
 import { useEffect, useRef, useState, type FormEvent } from "react";
+import Link from "next/link";
 import { site } from "@/lib/site";
+import { splitformsAccessKey, splitformsEndpoint } from "@/lib/splitforms";
 
 const field =
   "mt-2 block w-full rounded-[10px] border border-line bg-white px-4 py-3.5 text-[17px] text-ink outline-none focus:border-brand focus:ring-2 focus:ring-brand/25";
 const label = "block font-semibold text-ink";
 
-/** The form doesn't post anywhere: it builds a message and opens the visitor's own SMS or email app. */
+/** Sends the completed booking to Splitforms, including trips started on the home page. */
 export function BookingForm() {
-  const [summary, setSummary] = useState<string | null>(null);
-  const [copied, setCopied] = useState(false);
+  const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
+  const [error, setError] = useState("");
+  const submitting = useRef(false);
+  const loadedAt = useRef<HTMLInputElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
 
   // Trip details started in the home-page booking card arrive as query parameters.
   useEffect(() => {
+    if (loadedAt.current) loadedAt.current.value = String(Date.now());
     const form = formRef.current;
     if (!form) return;
     const params = new URLSearchParams(window.location.search);
@@ -30,55 +35,57 @@ export function BookingForm() {
     if (filled) form.querySelector<HTMLInputElement>("#booking-name")?.focus();
   }, []);
 
-  function buildSummary(form: HTMLFormElement): string {
-    const d = new FormData(form);
-    const get = (k: string) => String(d.get(k) ?? "").trim();
-    return [
-      "Booking request – Hawke’s Bay Total Mobility",
-      `Name: ${get("name")}`,
-      `Phone: ${get("phone")}`,
-      `Date: ${get("date")}${get("time") ? ` at ${get("time")}` : ""}`,
-      `Pickup: ${get("pickup")}`,
-      `Going to: ${get("destination")}`,
-      `Return trip: ${get("return")}`,
-      `Mobility aid: ${get("mobility")}`,
-      `Paying by: ${get("funding")}`,
-      get("notes") ? `Notes: ${get("notes")}` : "",
-    ]
-      .filter(Boolean)
-      .join("\n");
-  }
-
-  function handleSms(e: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const body = buildSummary(e.currentTarget);
-    setSummary(body);
-    window.location.href = `sms:${site.smsNumber}?&body=${encodeURIComponent(body)}`;
-  }
+    if (submitting.current) return;
+    const form = e.currentTarget;
+    const data = new FormData(form);
+    submitting.current = true;
+    setStatus("sending");
+    setError("");
 
-  function handleEmail(e: React.MouseEvent<HTMLButtonElement>) {
-    const form = e.currentTarget.closest("form");
-    if (!form || !form.reportValidity()) return;
-    const body = buildSummary(form);
-    setSummary(body);
-    const subject = encodeURIComponent("Booking request");
-    window.location.href = `mailto:${site.email}?subject=${subject}&body=${encodeURIComponent(body)}`;
-  }
-
-  function handleCopy() {
-    if (!summary) return;
-    navigator.clipboard.writeText(summary).then(() => {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 3000);
-    });
+    try {
+      const response = await fetch(splitformsEndpoint, {
+        method: "POST",
+        headers: { Accept: "application/json" },
+        body: data,
+        signal: AbortSignal.timeout(30000),
+      });
+      const result = await response.json();
+      if (!response.ok || result.success !== true) {
+        throw new Error(
+          typeof result.message === "string"
+            ? result.message
+            : "We couldn’t send your request. Please try again or call us.",
+        );
+      }
+      form.reset();
+      if (loadedAt.current) loadedAt.current.value = String(Date.now());
+      // Remove the initial trip parameters so reloading cannot restore a sent request.
+      window.history.replaceState(null, "", window.location.pathname + window.location.hash);
+      setStatus("success");
+    } catch (cause) {
+      setError(
+        cause instanceof Error && cause.name === "Error"
+          ? cause.message
+          : "We couldn’t confirm your request was received. Your details are still here. Please call us before trying again.",
+      );
+      setStatus("error");
+    } finally {
+      submitting.current = false;
+    }
   }
 
   return (
-    <form ref={formRef} id="booking" onSubmit={handleSms} className="scroll-mt-32">
+    <form ref={formRef} id="booking" action={splitformsEndpoint} method="POST" onSubmit={handleSubmit} aria-busy={status === "sending"} className="scroll-mt-32">
+      <input type="hidden" name="access_key" value={splitformsAccessKey} />
+      <input type="hidden" name="subject" value="Website booking request – Hawke’s Bay Total Mobility" />
+      <input ref={loadedAt} type="hidden" name="form_loaded_at" />
+      <input type="checkbox" name="botcheck" tabIndex={-1} autoComplete="off" className="hidden" aria-hidden="true" />
       <h2 className="font-display text-[28px] font-normal tracking-[-0.02em] text-ink">Booking request</h2>
       <p className="mt-2 text-[17px] text-muted">Fields marked * are needed. Everything else helps us plan.</p>
 
-      <div className="mt-8 grid gap-6 sm:grid-cols-2">
+      <fieldset disabled={status === "sending"} className="mt-8 grid min-w-0 gap-6 sm:grid-cols-2">
         <div>
           <label htmlFor="booking-name" className={label}>
             Passenger’s name *
@@ -172,40 +179,37 @@ export function BookingForm() {
             placeholder="Someone travelling with you, the make of your chair, which entrance or department…"
           />
         </div>
-      </div>
+      </fieldset>
 
       <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-        <button type="submit" className="inline-flex min-h-13 items-center justify-center rounded-full bg-brand px-7 text-[17px] font-semibold text-white hover:bg-brand-dark">
-          Send as a text
-        </button>
         <button
-          type="button"
-          onClick={handleEmail}
-          className="inline-flex min-h-13 items-center justify-center rounded-full px-7 text-[17px] font-semibold text-ink ring-1 ring-inset ring-navy/30 hover:ring-navy"
+          type="submit"
+          disabled={status === "sending"}
+          className="inline-flex min-h-13 items-center justify-center rounded-full bg-brand px-7 text-[17px] font-semibold text-white hover:bg-brand-dark disabled:cursor-wait disabled:opacity-60"
         >
-          Send as an email
+          {status === "sending" ? "Sending request…" : "Send booking request"}
         </button>
       </div>
       <p className="mt-4 text-[15px] text-muted">
-        This opens your phone’s messages (or your email) with the details filled in. Nothing is sent until you press send there. We’ll reply to confirm.
+        We’ll contact you to confirm availability and your pickup time. Your ride is only booked once we confirm it.
+        For same-day travel, call <a href={site.phoneHref} className="font-semibold text-brand underline underline-offset-4">{site.phoneDisplay}</a>.
+      </p>
+      <p className="mt-3 text-[14px] text-muted">
+        By sending this request, you agree to us using your details to arrange your trip. Read our{" "}
+        <Link href="/privacy" className="text-brand underline underline-offset-4">privacy policy</Link>.
       </p>
 
-      {summary && (
-        <div className="mt-8 rounded-[10px] border border-line bg-mist p-5" role="status" aria-live="polite">
-          <div className="flex items-center justify-between gap-3">
-            <p className="font-semibold text-ink">Your booking details</p>
-            <button type="button" onClick={handleCopy} className="text-[15px] font-semibold text-brand underline underline-offset-4">
-              {copied ? "Copied" : "Copy"}
-            </button>
-          </div>
-          <pre className="mt-3 font-sans text-[15px] leading-relaxed whitespace-pre-wrap">{summary}</pre>
-          <p className="mt-3 text-[15px]">
-            If nothing opened, copy these details and text them to{" "}
-            <a href={site.phoneHref} className="font-semibold text-brand underline underline-offset-4">
-              {site.phoneDisplay}
-            </a>
-            .
-          </p>
+      {status === "success" && (
+        <div className="mt-6 rounded-[10px] border border-line bg-mist p-5" role="status" aria-live="polite">
+          <p className="font-semibold text-ink">Your booking request has been sent.</p>
+          <p className="mt-2 text-[16px]">We’ll contact you to confirm your ride. If you need to travel today, please call {site.phoneDisplay}.</p>
+        </div>
+      )}
+      {status === "error" && (
+        <div className="mt-6 rounded-[10px] border border-red-300 bg-red-50 p-5 text-ink" role="alert">
+          <p className="font-semibold">Your booking request could not be confirmed.</p>
+          <p className="mt-2 text-[16px]">{error}</p>
+          <a href={site.phoneHref} className="mt-3 inline-block font-semibold text-brand underline underline-offset-4">Call {site.phoneDisplay}</a>
         </div>
       )}
     </form>
